@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/TaskerFSBlazor/obj
+/TaskerFSBlazor/Properties/serviceDependencies.local.json.user
+/TaskerFSBlazor/Properties/serviceDependencies.local.json
+/TaskerFSBlazor.Client/obj
