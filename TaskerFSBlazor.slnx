@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TaskerFSBlazor.Client/TaskerFSBlazor.Client.csproj" />
+  <Project Path="TaskerFSBlazor/TaskerFSBlazor.csproj" />
+</Solution>
