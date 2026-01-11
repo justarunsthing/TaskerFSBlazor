@@ -8,3 +8,5 @@
 /TaskerFSBlazor/Properties/serviceDependencies.local.json
 /TaskerFSBlazor.Client/obj
 /TaskerFSBlazor/TaskerFSBlazor.csproj.user
+/TaskerFSBlazor/bin/Debug/net10.0
+/TaskerFSBlazor.Client/bin/Debug/net10.0
