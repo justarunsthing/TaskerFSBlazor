@@ -1,0 +1,37 @@
+﻿<div class="d-flex">
+	<div>
+		<InputCheckbox @bind-Value="Item.IsComplete" @bind-Value:after="CompleteItemAsync"></InputCheckbox>
+	</div>
+	<div id="item-name" class="px-2 flex-grow-1 @(Item.IsComplete ? "complete" : "")">
+		@Item.Name
+	</div>
+	<div>
+		<button class="btn" @onclick="DeleteItemAsync">
+			<i class="bi bi-trash-fill text-danger"></i>
+		</button>
+	</div>
+</div>
+
+@code {
+	[Parameter, EditorRequired]
+	public TaskerItem? Item { get; set; }
+
+	/// <summary>
+	/// Event handler to send back TaskerItem to the parent component
+	/// </summary>
+	[Parameter]
+	public EventCallback<TaskerItem> OnDeleteCallBack { get; set; }
+
+	[Parameter]
+	public EventCallback<TaskerItem> OnCompleteCallback { get; set; }
+
+	private async Task DeleteItemAsync()
+	{
+		await OnDeleteCallBack.InvokeAsync(Item);
+	}
+
+	private async Task CompleteItemAsync()
+	{
+		await OnCompleteCallback.InvokeAsync(Item);
+	}
+}
