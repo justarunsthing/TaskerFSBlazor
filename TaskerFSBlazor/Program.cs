@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TaskerFSBlazor.Client.Pages;
 using TaskerFSBlazor.Components;
 using TaskerFSBlazor.Components.Account;
 using TaskerFSBlazor.Data;
