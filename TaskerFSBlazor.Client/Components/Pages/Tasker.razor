@@ -2,8 +2,9 @@
 @using System.Text.Json
 @using System.Text.Json.Serialization
 @inject IJSRuntime JS
+@rendermode InteractiveWebAssembly
 
-<div class="d-flex align-items-center justify-content-center">
+<div class="d-flex align-items-center justify-content-center mt-5">
 	<div class=" task p-5">
 		<div class="p-2 text-center mb-3">
 			<img src="/img/tasker_600.png" width="300" />
@@ -37,17 +38,18 @@
 
 	// Overridden as we want to get list after everything has loaded on the page
 	// All the controls are necessarily not there
-	protected override async Task OnInitializedAsync()
-	{
-		await LoadListAsync();
-	}
+	// protected override async Task OnInitializedAsync()
+	// {
+	// }
 
 	// After page has loaded, UI has finished loading, all controls are there
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
 		{
-			await inputText.Element.Value.FocusAsync();
+			await inputText!.Element!.Value.FocusAsync();
+			await LoadListAsync();
+            StateHasChanged();
 		}
 	}
 
@@ -58,7 +60,7 @@
 		item = new();
 
 		await SaveListAsync();
-		await inputText.Element.Value.FocusAsync();
+		await inputText!.Element!.Value.FocusAsync();
 	}
 
 	/// <summary>
