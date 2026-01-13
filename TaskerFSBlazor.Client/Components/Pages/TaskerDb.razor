@@ -1,8 +1,11 @@
 ﻿@page "/taskerdb"
 @using System.Text.Json
 @using System.Text.Json.Serialization
+@using Microsoft.AspNetCore.Authorization
+
 @inject IJSRuntime JS
 @rendermode InteractiveWebAssembly
+@attribute [Authorize]
 
 <div class="d-flex align-items-center justify-content-center mt-5">
 	<div class=" task p-5">
