@@ -1,0 +1,101 @@
+﻿@page "/taskerdb"
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject IJSRuntime JS
+@rendermode InteractiveWebAssembly
+
+<div class="d-flex align-items-center justify-content-center mt-5">
+	<div class=" task p-5">
+		<div class="p-2 text-center mb-3">
+			<img src="/img/tasker_600.png" width="300" />
+		</div>
+		<div>
+			<EditForm Model="item" OnValidSubmit="AddTaskAsync">
+				<DataAnnotationsValidator />
+				<div class="d-flex flex-row gap-2">
+					<InputText @ref=inputText class="form-control" placeholder="Enter a task" @bind-Value="item.Name"/>
+					<button type="submit" class="btn btn-primary">Add</button>
+				</div>
+				<div>
+					<ValidationMessage For="() => item.Name" />
+				</div>
+			</EditForm>
+		</div>
+		<hr />
+		<div class="vstack">
+			@foreach (var item in taskerItems)
+			{
+				<TaskerLine Item="item" OnDeleteCallBack="DeleteTaskAsync" OnCompleteCallback="CompleteTaskAsync" />
+			}
+		</div>
+	</div>
+</div>
+
+@code {
+	private TaskerItem item = new();
+	private List<TaskerItem> taskerItems = new();
+	private InputText? inputText { get; set; } // Like giving an id to the InputText element
+
+	// Overridden as we want to get list after everything has loaded on the page
+	// All the controls are necessarily not there
+	// protected override async Task OnInitializedAsync()
+	// {
+	// }
+
+	// After page has loaded, UI has finished loading, all controls are there
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await inputText!.Element!.Value.FocusAsync();
+			await LoadListAsync();
+            StateHasChanged();
+		}
+	}
+
+	private async Task AddTaskAsync()
+	{
+		item.Id = Guid.NewGuid();
+		taskerItems.Add(item);
+		item = new();
+
+		await SaveListAsync();
+		await inputText!.Element!.Value.FocusAsync();
+	}
+
+	/// <summary>
+	/// Event callback function to delete a task from the child component
+	/// </summary>
+	/// <param name="item"></param>
+	private async Task DeleteTaskAsync(TaskerItem item)
+	{
+		taskerItems.Remove(item);
+		await SaveListAsync();
+	}
+
+	private async Task CompleteTaskAsync(TaskerItem item)
+	{
+		await SaveListAsync();
+	}
+
+	private async Task SaveListAsync()
+	{
+		string? taskerItemsJson = JsonSerializer.Serialize(taskerItems);
+		await JS.InvokeVoidAsync("localStorage.setItem", "TaskerList", taskerItemsJson);
+	}
+
+	private async Task LoadListAsync()
+	{
+		try
+		{
+			// getItem returns a JSON list
+			string taskerItemsJson = await JS.InvokeAsync<string>("localStorage.getItem", "TaskerList") ?? "[]"; // if null, empty string of an array
+			taskerItems = JsonSerializer.Deserialize<List<TaskerItem>>(taskerItemsJson);
+		}
+		catch (Exception ex)
+		{
+			taskerItems = new();
+			await SaveListAsync();
+		}
+	}
+}
