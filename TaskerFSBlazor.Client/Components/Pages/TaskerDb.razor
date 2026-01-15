@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Authorization
 
 @inject IJSRuntime JS
+@inject HttpClient Http
 @rendermode InteractiveWebAssembly
 @attribute [Authorize]
 
@@ -52,18 +53,25 @@
 		{
 			await inputText!.Element!.Value.FocusAsync();
 			await LoadListAsync();
-            StateHasChanged();
+			StateHasChanged();
 		}
 	}
 
 	private async Task AddTaskAsync()
 	{
 		item.Id = Guid.NewGuid();
-		taskerItems.Add(item);
-		item = new();
 
-		await SaveListAsync();
-		await inputText!.Element!.Value.FocusAsync();
+		try
+		{
+			var response = await Http.PostAsJsonAsync("api/TaskerItem", item);
+
+			// Reset the form
+			item = new();
+		}
+		catch
+		{
+			await inputText!.Element!.Value.FocusAsync();
+		}
 	}
 
 	/// <summary>
