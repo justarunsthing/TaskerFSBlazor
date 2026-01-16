@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using TaskerFSBlazor.Client.Models;
 using TaskerFSBlazor.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace TaskerFSBlazor.Controllers
 {
@@ -19,6 +20,18 @@ namespace TaskerFSBlazor.Controllers
         {
             _context = context;
             _userManager = userManager;
+        }
+
+        // GET: api/TaskerItem
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TaskerItem>>> GetTaskerItems()
+        {
+            var userId = _userManager.GetUserId(User);
+            var dbTaskerItems = await _context.TaskerItems.Where(t => t.UserId == userId).ToListAsync();
+
+            // DbTaskerItem inherits from TaskerItem, only the properties in TaskerItem will be serialized
+            // hence we can return the list of DbTaskerItem directly
+            return dbTaskerItems;
         }
 
         // POST: api/TaskerItem
