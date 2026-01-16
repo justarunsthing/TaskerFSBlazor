@@ -42,11 +42,12 @@
 
 	// Overridden as we want to get list after everything has loaded on the page
 	// All the controls are necessarily not there
-	// protected override async Task OnInitializedAsync()
-	// {
-	// }
+    // Pre-rendering state, here's what the HTML looks like
+	protected override async Task OnInitializedAsync()
+	{
+	}
 
-	// After page has loaded, UI has finished loading, all controls are there
+	// After page has loaded, connection has established, WA has started up, UI has finished loading, all controls are there
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
@@ -110,7 +111,6 @@
 		catch (Exception ex)
 		{
 			taskerItems = new();
-			await SaveListAsync();
 		}
 	}
 }
