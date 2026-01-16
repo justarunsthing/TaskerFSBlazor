@@ -107,6 +107,10 @@
 
 			// Convert the json string to list of TaskerItem
 			taskerItems = await response.Content.ReadFromJsonAsync<List<TaskerItem>>() ?? new List<TaskerItem>();
+
+            // When calling HTTP endpoints, we might need to call StateHasChanged to refresh the UI
+            // as Blazor might not be aware that the call has completed
+            StateHasChanged();
 		}
 		catch (Exception ex)
 		{
