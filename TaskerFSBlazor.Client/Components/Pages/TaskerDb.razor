@@ -67,6 +67,8 @@
 
 			// Reset the form
 			item = new();
+
+            await LoadListAsync();
 		}
 		catch
 		{
@@ -99,9 +101,11 @@
 	{
 		try
 		{
-			// getItem returns a JSON list
-			string taskerItemsJson = await JS.InvokeAsync<string>("localStorage.getItem", "TaskerList") ?? "[]"; // if null, empty string of an array
-			taskerItems = JsonSerializer.Deserialize<List<TaskerItem>>(taskerItemsJson);
+			var response = await Http.GetAsync("api/TaskerItem");
+			response.EnsureSuccessStatusCode();
+
+			// Convert the json string to list of TaskerItem
+			taskerItems = await response.Content.ReadFromJsonAsync<List<TaskerItem>>() ?? new List<TaskerItem>();
 		}
 		catch (Exception ex)
 		{
