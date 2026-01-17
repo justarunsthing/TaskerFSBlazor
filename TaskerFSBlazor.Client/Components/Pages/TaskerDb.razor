@@ -29,7 +29,7 @@
 		<div class="vstack">
 			@foreach (var item in taskerItems)
 			{
-				<TaskerLine Item="item" OnDeleteCallBack="DeleteTaskAsync" OnCompleteCallback="CompleteTaskAsync" />
+				<TaskerLine Item="item" OnDeleteCallBack="DeleteTaskAsync" OnCompleteCallback="UpdateTaskAsync" />
 			}
 		</div>
 	</div>
@@ -42,7 +42,7 @@
 
 	// Overridden as we want to get list after everything has loaded on the page
 	// All the controls are necessarily not there
-    // Pre-rendering state, here's what the HTML looks like
+	// Pre-rendering state, here's what the HTML looks like
 	protected override async Task OnInitializedAsync()
 	{
 	}
@@ -69,11 +69,27 @@
 			// Reset the form
 			item = new();
 
-            await LoadListAsync();
+			await LoadListAsync();
 		}
 		catch
 		{
 			await inputText!.Element!.Value.FocusAsync();
+		}
+	}
+
+	private async void UpdateTaskAsync(TaskerItem item)
+	{
+		try
+		{
+			var route = $"api/TaskerItem/{item.Id}";
+            var response = await Http.PutAsJsonAsync(route, item);
+
+            response.EnsureSuccessStatusCode();
+            await LoadListAsync();
+		}
+		catch
+		{
+			throw;
 		}
 	}
 
@@ -84,11 +100,6 @@
 	private async Task DeleteTaskAsync(TaskerItem item)
 	{
 		taskerItems.Remove(item);
-		await SaveListAsync();
-	}
-
-	private async Task CompleteTaskAsync(TaskerItem item)
-	{
 		await SaveListAsync();
 	}
 
