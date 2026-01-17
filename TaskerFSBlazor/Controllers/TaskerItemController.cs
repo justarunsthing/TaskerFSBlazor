@@ -35,6 +35,7 @@ namespace TaskerFSBlazor.Controllers
         }
 
         // POST: api/TaskerItem
+        // Creates a new TaskerItem
         [HttpPost]
         public async Task<ActionResult<TaskerItem>> PostDbTaskerItem([FromBody] TaskerItem taskerItem)
         {
@@ -51,6 +52,35 @@ namespace TaskerFSBlazor.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        // PUT: api/TaskerItem/{id}
+        // Updates an existing TaskerItem, replacing it entirely
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutDbTaskerItem([FromRoute] Guid id, [FromBody] TaskerItem taskerItem)
+        {
+            if (id != taskerItem.Id)
+            {
+                return BadRequest();
+            }
+
+            var userId = _userManager.GetUserId(User);
+            var dbTaskerItem = await _context.TaskerItems.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+
+            if (dbTaskerItem == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                dbTaskerItem.Name = taskerItem.Name;
+                dbTaskerItem.IsComplete = taskerItem.IsComplete;
+
+                _context.Update(dbTaskerItem);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
         }
     }
 }
