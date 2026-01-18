@@ -22,6 +22,25 @@ namespace TaskerFSBlazor.Controllers
             _userManager = userManager;
         }
 
+        // GET: api/TaskerItem/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TaskerItem>> GetTaskerItem([FromRoute] Guid id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var dbTaskerItem = await _context.TaskerItems.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+
+            if (dbTaskerItem == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                // DbTaskerItem inherits from TaskerItem, only the properties in TaskerItem will be serialized
+                // hence we can return the list of DbTaskerItem directly
+                return dbTaskerItem;
+            }
+        }
+
         // GET: api/TaskerItem
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskerItem>>> GetTaskerItems()
