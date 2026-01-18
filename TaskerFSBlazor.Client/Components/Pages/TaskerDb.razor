@@ -82,10 +82,10 @@
 		try
 		{
 			var route = $"api/TaskerItem/{item.Id}";
-            var response = await Http.PutAsJsonAsync(route, item);
+			var response = await Http.PutAsJsonAsync(route, item);
 
-            response.EnsureSuccessStatusCode();
-            await LoadListAsync();
+			response.EnsureSuccessStatusCode();
+			await LoadListAsync();
 		}
 		catch
 		{
@@ -99,14 +99,18 @@
 	/// <param name="item"></param>
 	private async Task DeleteTaskAsync(TaskerItem item)
 	{
-		taskerItems.Remove(item);
-		await SaveListAsync();
-	}
+		try
+		{
+			var route = $"api/TaskerItem/{item.Id}";
+            var response = await Http.DeleteAsync(route);
 
-	private async Task SaveListAsync()
-	{
-		string? taskerItemsJson = JsonSerializer.Serialize(taskerItems);
-		await JS.InvokeVoidAsync("localStorage.setItem", "TaskerList", taskerItemsJson);
+            response.EnsureSuccessStatusCode();
+            await LoadListAsync();
+		}
+		catch
+		{
+			throw;
+		}
 	}
 
 	private async Task LoadListAsync()
