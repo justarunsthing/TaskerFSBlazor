@@ -82,5 +82,25 @@ namespace TaskerFSBlazor.Controllers
                 return NoContent();
             }
         }
+
+        // DELETE: api/TaskerItem/{id}
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteDbTaskerItem([FromRoute] Guid id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var dbTaskerItem = await _context.TaskerItems.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+
+            if (dbTaskerItem == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                _context.TaskerItems.Remove(dbTaskerItem);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+        }
     }
 }
