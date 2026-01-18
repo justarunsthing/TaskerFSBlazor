@@ -70,7 +70,8 @@ namespace TaskerFSBlazor.Controllers
             _context.TaskerItems.Add(dbTaskerItem);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            // RESTful compliant
+            return CreatedAtAction("GetTaskerItem", new { id = dbTaskerItem.Id }, dbTaskerItem);
         }
 
         // PUT: api/TaskerItem/{id}
